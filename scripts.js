@@ -1,31 +1,30 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const messagesDiv = document.getElementById('messages');
+    const usernameInput = document.getElementById('username');
+    const messageInput = document.getElementById('message');
 
-1.16 KiB
-
-document.addEventListener("DOMContentLoaded", () => {
-    const socket = io();
-    const messagesDiv = document.getElementById("messages");
-    const usernameInput = document.getElementById("username");
-    const messageInput = document.getElementById("message");
     function sendMessage() {
         const username = usernameInput.value.trim();
         const message = messageInput.value.trim();
+
         if (username && message) {
-            socket.emit("chat message", { username, message });
-            messageInput.value = "";
-        } else {
-            alert("Please enter both username and message.");
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.textContent = `${username}: ${message}`;
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Clear the message input after sending
+            messageInput.value = '';
         }
     }
-    socket.on("chat message", (msg) => {
-        const messageDiv = document.createElement("div");
-        messageDiv.classList.add("message");
-        messageDiv.innerHTML = `<strong>${msg.username}:</strong> ${msg.message}`;
-        messagesDiv.appendChild(messageDiv);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    });
-    document.querySelector("button").addEventListener("click", sendMessage);
-    messageInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
+
+    // Attach event listener to button
+    document.querySelector('button').addEventListener('click', sendMessage);
+
+    // Optional: Allow sending message by pressing Enter key
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
             sendMessage();
         }
     });
